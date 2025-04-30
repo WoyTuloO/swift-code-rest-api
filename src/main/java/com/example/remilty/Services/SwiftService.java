@@ -1,13 +1,16 @@
 package com.example.remilty.Services;
 
+import com.example.remilty.DTOs.DTOMappers;
 import com.example.remilty.Models.SwiftData;
+import com.example.remilty.Models.SwiftDataRequest;
 import com.example.remilty.Repositories.SwiftRepository;
+import jakarta.persistence.EntityNotFoundException;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
+import org.springframework.transaction.annotation.Transactional;
 
 import java.util.ArrayList;
 import java.util.List;
-import java.util.Optional;
 
 @Component
 public class SwiftService {
@@ -46,9 +49,17 @@ public class SwiftService {
         return swiftRepository.findByCountryISO2(iso2Code);
     }
 
+    public Long addSwiftData(SwiftDataRequest swiftDataRequest) {
+        SwiftData saved = swiftRepository.save(DTOMappers.mapToSwiftData(swiftDataRequest));
+        return saved.getId();
+    }
 
-    public List<SwiftData> findAll() {
-        return swiftRepository.findAll();
+    @Transactional
+    public void deleteSwiftData(String swiftCode) {
+        if(!swiftRepository.existsBySwiftCode(swiftCode))
+            throw new EntityNotFoundException("SWIFT code not found");
+
+        swiftRepository.deleteBySwiftCode(swiftCode);
     }
 }
 

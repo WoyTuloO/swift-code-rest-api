@@ -3,10 +3,14 @@ package com.example.remilty.Models;
 
 import com.fasterxml.jackson.annotation.JsonProperty;
 import jakarta.persistence.*;
+import lombok.AllArgsConstructor;
+import lombok.Builder;
 import lombok.Data;
 
 @Data
 @Entity
+@Builder
+@AllArgsConstructor
 public class SwiftData {
 
 
