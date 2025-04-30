@@ -11,19 +11,19 @@ public class DTOMappers {
         return SwiftDataDTO.builder()
                 .address(swiftData.getAddress())
                 .bankName(swiftData.getBankName())
-                .countryISO2(swiftData.getCountryISO2())
-                .countryName(swiftData.getCountryName())
+                .countryISO2(swiftData.getCountryISO2() ==null ? null : swiftData.getCountryISO2().trim().toUpperCase())
+                .countryName(swiftData.getCountryName() == null ? null : swiftData.getCountryName().trim().toUpperCase())
                 .isHeadquarter(swiftData.isHeadquarter())
-                .swiftCode(swiftData.getSwiftCode())
+                .swiftCode(swiftData.getSwiftCode().trim().toUpperCase())
                 .branches(branches)
                 .build();
     }
 
-    public static SwiftCountryDataDTO mapToSwiftCountryDataDTO(String countryISO2, String countryName, List<SwiftDataDTO> branches) {
+    public static SwiftCountryDataDTO mapToSwiftCountryDataDTO(String countryISO2, String countryName, List<SwiftDataDTO> swiftCodes) {
         return SwiftCountryDataDTO.builder()
-                .countryISO2(countryISO2)
-                .countryName(countryName)
-                .branches(branches)
+                .countryISO2(countryISO2.trim().toUpperCase())
+                .countryName(countryName.trim().toUpperCase())
+                .swiftCodes(swiftCodes)
                 .build();
     }
 
@@ -31,9 +31,10 @@ public class DTOMappers {
         return SwiftData.builder()
                 .address(swiftDataRequest.getAddress())
                 .bankName(swiftDataRequest.getBankName())
-                .countryISO2(swiftDataRequest.getCountryISO2())
-                .countryName(swiftDataRequest.getCountryName())
-                .swiftCode(swiftDataRequest.getSwiftCode())
+                .countryISO2(swiftDataRequest.getCountryISO2().trim().toUpperCase())
+                .countryName(swiftDataRequest.getCountryName().trim().toUpperCase())
+                .isHeadquarter(swiftDataRequest.getSwiftCode().endsWith("XXX"))
+                .swiftCode(swiftDataRequest.getSwiftCode().trim().toUpperCase())
                 .build();
     }
 }

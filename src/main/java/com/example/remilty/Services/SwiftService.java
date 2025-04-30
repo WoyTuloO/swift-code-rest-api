@@ -1,6 +1,8 @@
 package com.example.remilty.Services;
 
 import com.example.remilty.DTOs.DTOMappers;
+import com.example.remilty.DTOs.SwiftCountryDataDTO;
+import com.example.remilty.DTOs.SwiftDataDTO;
 import com.example.remilty.Models.SwiftData;
 import com.example.remilty.Models.SwiftDataRequest;
 import com.example.remilty.Repositories.SwiftRepository;
@@ -11,6 +13,7 @@ import org.springframework.transaction.annotation.Transactional;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Optional;
 
 @Component
 public class SwiftService {
@@ -22,31 +25,47 @@ public class SwiftService {
         this.swiftRepository = swiftRepository;
     }
 
-    public List<SwiftData> getSwiftDataBySwiftCode(String swiftCode) {
-        if(swiftCode.endsWith("XXX")){
-            List<SwiftData> swiftDataList = swiftRepository.findBySwiftCode(swiftCode);
-            if(swiftDataList.isEmpty()){
-                new ArrayList<>();
-            }
+    public Optional<SwiftDataDTO> getSwiftDataBySwiftCode(String swiftCode) {
 
-            List<SwiftData> allBySwiftCodeStartingWith = swiftRepository.findAllBySwiftCodeStartingWith(swiftCode.substring(0, swiftCode.length() - 3));
+        List<SwiftData> allBySwiftCodeStartingWith = new ArrayList<>(
+                swiftRepository.findAllBySwiftCodeStartingWith(
+                        swiftCode.endsWith("XXX") ? swiftCode.substring(0, swiftCode.length() - 3) : swiftCode)
+            );
 
-            if(!allBySwiftCodeStartingWith.isEmpty()){
-                swiftDataList.addAll(allBySwiftCodeStartingWith);
-            }
+        if(allBySwiftCodeStartingWith.isEmpty())
+            return Optional.empty();
 
-            return swiftDataList;
-        }
+        SwiftData HQ = allBySwiftCodeStartingWith.stream()
+                .filter(data -> data.getSwiftCode().equals(swiftCode))
+                .findFirst().orElse(allBySwiftCodeStartingWith.getFirst());
 
-        List<SwiftData> swiftData = swiftRepository.findBySwiftCode(swiftCode);
-        if(!swiftData.isEmpty()){
-            return swiftData;
-        }
-        return new ArrayList<>();
+        List<SwiftDataDTO> branches = allBySwiftCodeStartingWith.stream()
+                .filter(data->!data.getSwiftCode().equals(swiftCode))
+                .filter(data->!data.getSwiftCode().endsWith("XXX"))
+                .map(data->DTOMappers.mapToSwiftDataDTO(data, List.of()))
+                .toList();
+
+        return Optional.of(DTOMappers.mapToSwiftDataDTO(HQ, branches));
+
     }
 
-    public List<SwiftData> getSwiftDataByIso2Code(String iso2Code) {
-        return swiftRepository.findByCountryISO2(iso2Code);
+    public Optional<SwiftCountryDataDTO> getSwiftDataByIso2Code(String iso2Code) {
+        ArrayList<SwiftData> swiftData = new ArrayList<>(swiftRepository.findByCountryISO2(iso2Code));
+
+        if(swiftData.isEmpty())
+            return Optional.empty();
+
+        String countryName = swiftData.getFirst().getCountryName().trim().toUpperCase();
+        String countryISO2 = swiftData.getFirst().getCountryISO2().trim().toUpperCase();
+
+        List<SwiftDataDTO> swiftDataDTOList = swiftData.stream()
+                .map(data -> {
+                    data.setCountryName(null);
+                    return DTOMappers.mapToSwiftDataDTO(data, null);
+                })
+                .toList();
+
+        return Optional.of(DTOMappers.mapToSwiftCountryDataDTO(countryISO2, countryName, swiftDataDTOList));
     }
 
     public Long addSwiftData(SwiftDataRequest swiftDataRequest) {

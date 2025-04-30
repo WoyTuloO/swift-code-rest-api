@@ -8,7 +8,6 @@ import java.util.List;
 
 @Repository
 public interface SwiftRepository extends JpaRepository<SwiftData, Long> {
-    List<SwiftData> findBySwiftCode(String swiftCode);
     List<SwiftData> findByCountryISO2(String countryISO2);
     List<SwiftData> findAllBySwiftCodeStartingWith(String swiftCodePrefix);
     boolean existsBySwiftCode(String swiftCode);

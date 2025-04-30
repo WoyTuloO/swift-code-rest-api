@@ -4,6 +4,7 @@ import com.example.remilty.Models.SwiftData;
 import com.example.remilty.Repositories.SwiftRepository;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.CommandLineRunner;
+import org.springframework.context.annotation.Profile;
 import org.springframework.stereotype.Component;
 
 import java.io.BufferedReader;
@@ -13,18 +14,18 @@ import java.util.ArrayList;
 import java.util.List;
 
 @Component
+@Profile("!test")
 public class SwiftDataLoader implements CommandLineRunner {
 
     private final SwiftRepository swiftRepository;
 
     @Autowired
     public SwiftDataLoader(SwiftRepository swiftRepository) {
-        System.out.println("SwiftDataLoader: ładowanie danych startuje!");
         this.swiftRepository = swiftRepository;
     }
 
     @Override
-    public void run(String... args) throws Exception {
+    public void run(String... args) {
         File file = new File("src/main/resources/db.tsv");
         List<SwiftData> swiftData = loadDbData(file);
         if (!swiftData.isEmpty())
@@ -40,11 +41,11 @@ public class SwiftDataLoader implements CommandLineRunner {
                 String[] dataSplit = line.split("\t");
 
                 SwiftData swiftData = new SwiftData(
-                        dataSplit[0],
+                        dataSplit[0].trim().toUpperCase(),
                         dataSplit[1],
                         dataSplit[3],
                         dataSplit[4],
-                        dataSplit[6]
+                        dataSplit[6].trim().toUpperCase()
                 );
 
                 if(!swiftRepository.existsBySwiftCode(swiftData.getSwiftCode()))

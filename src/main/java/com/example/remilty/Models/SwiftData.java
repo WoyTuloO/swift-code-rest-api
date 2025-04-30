@@ -35,12 +35,12 @@ public class SwiftData {
 
 
     public SwiftData(String iso2Code, String swiftCode, String name, String address, String countryName) {
-        this.countryISO2 = iso2Code;
-        this.swiftCode = swiftCode;
+        this.countryISO2 = iso2Code.trim().toUpperCase();
+        this.swiftCode = swiftCode.trim().toUpperCase();
         this.bankName = name;
         this.address = address;
         isHeadquarter = swiftCode.endsWith("XXX");
-        this.countryName = countryName;
+        this.countryName = countryName.trim().toUpperCase();
 
     }
 
