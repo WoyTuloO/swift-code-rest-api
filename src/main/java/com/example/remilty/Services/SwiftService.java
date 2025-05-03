@@ -81,7 +81,7 @@ public class SwiftService {
         if(!swiftRepository.existsBySwiftCode(swiftCode.trim().toUpperCase()))
             throw new EntityNotFoundException("SWIFT code not found");
 
-        swiftRepository.deleteBySwiftCode(swiftCode);
+        swiftRepository.deleteBySwiftCode(swiftCode.trim().toUpperCase());
     }
 }
 
