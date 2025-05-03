@@ -1,5 +1,6 @@
 package com.example.remilty.Models;
 
+import com.fasterxml.jackson.annotation.JsonProperty;
 import jakarta.validation.constraints.NotBlank;
 import lombok.AllArgsConstructor;
 import lombok.Data;
@@ -19,4 +20,7 @@ public class SwiftDataRequest {
     private String countryISO2;
     @NotBlank
     private String countryName;
+    @JsonProperty("isHeadquarter")
+    @NotBlank
+    private boolean isHeadquarter;
 }
