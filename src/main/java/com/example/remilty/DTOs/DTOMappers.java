@@ -33,7 +33,7 @@ public class DTOMappers {
                 .bankName(swiftDataRequest.getBankName())
                 .countryISO2(swiftDataRequest.getCountryISO2().trim().toUpperCase())
                 .countryName(swiftDataRequest.getCountryName().trim().toUpperCase())
-                .isHeadquarter(swiftDataRequest.getSwiftCode().endsWith("XXX"))
+                .isHeadquarter(swiftDataRequest.isHeadquarter())
                 .swiftCode(swiftDataRequest.getSwiftCode().trim().toUpperCase())
                 .build();
     }
