@@ -31,6 +31,9 @@ public class SwiftController {
 
     @GetMapping("{swiftCode}")
     public ResponseEntity<Object> getSwiftCode(@PathVariable("swiftCode") String swiftCode) {
+        if(swiftCode.length() != 11)
+            return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(new MessageResponse("SWIFT code must be exactly 11 characters"));
+
         Optional<SwiftDataDTO> swiftDataBySwiftCode = swiftService.getSwiftDataBySwiftCode(swiftCode.trim().toUpperCase());
         if (swiftDataBySwiftCode.isPresent())
             return ResponseEntity.status(HttpStatus.OK).body(swiftDataBySwiftCode.get());
