@@ -103,13 +103,14 @@ public class DTOMapperTest {
     }
 
     @Test
-    void shouldMapToSwiftData(){
+    void shouldMapToSwiftData_True(){
         SwiftDataRequest swiftDataRequest = new SwiftDataRequest();
         swiftDataRequest.setAddress("123 Main St");
         swiftDataRequest.setBankName("Bank of America");
         swiftDataRequest.setCountryISO2("US");
         swiftDataRequest.setCountryName("United States");
         swiftDataRequest.setSwiftCode("BOFAUS3NXXX");
+        swiftDataRequest.setHeadquarter(true);
 
         SwiftData result = DTOMappers.mapToSwiftData(swiftDataRequest);
         assertThat(result.getAddress()).isEqualTo("123 Main St");
@@ -118,6 +119,26 @@ public class DTOMapperTest {
         assertThat(result.getCountryName()).isEqualTo("UNITED STATES");
         assertThat(result.isHeadquarter()).isTrue();
         assertThat(result.getSwiftCode()).isEqualTo("BOFAUS3NXXX");
+
+    }
+
+    @Test
+    void shouldMapToSwiftData_False(){
+        SwiftDataRequest swiftDataRequest = new SwiftDataRequest();
+        swiftDataRequest.setAddress("123 Main St");
+        swiftDataRequest.setBankName("Bank of America");
+        swiftDataRequest.setCountryISO2("US");
+        swiftDataRequest.setCountryName("United States");
+        swiftDataRequest.setSwiftCode("BOFAUS3NDDD");
+        swiftDataRequest.setHeadquarter(false);
+
+        SwiftData result = DTOMappers.mapToSwiftData(swiftDataRequest);
+        assertThat(result.getAddress()).isEqualTo("123 Main St");
+        assertThat(result.getBankName()).isEqualTo("Bank of America");
+        assertThat(result.getCountryISO2()).isEqualTo("US");
+        assertThat(result.getCountryName()).isEqualTo("UNITED STATES");
+        assertThat(result.isHeadquarter()).isFalse();
+        assertThat(result.getSwiftCode()).isEqualTo("BOFAUS3NDDD");
 
     }
 }

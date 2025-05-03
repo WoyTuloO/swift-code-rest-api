@@ -101,7 +101,7 @@ public class SwiftControllerTest {
     @Test
     void shouldAddSwiftData_and_shouldReturnConflictWhenDuplicatingData() throws Exception {
         SwiftDataRequest request = new SwiftDataRequest(
-                randomSwiftCode, "US", "United States", "123 Test St, Test City, Test State, 12345", "ABCDUS33"        );
+                randomSwiftCode, "US", "United States", "123 Test St, Test City, Test State, 12345", "ABCDUS33AAA", false);
         mockMvc.perform(post("/v1/swift-codes")
                         .contentType(MediaType.APPLICATION_JSON)
                         .content(objectMapper.writeValueAsString(request)))
