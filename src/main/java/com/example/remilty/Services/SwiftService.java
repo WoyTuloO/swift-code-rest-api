@@ -29,18 +29,18 @@ public class SwiftService {
 
         List<SwiftData> allBySwiftCodeStartingWith = new ArrayList<>(
                 swiftRepository.findAllBySwiftCodeStartingWith(
-                        swiftCode.endsWith("XXX") ? swiftCode.substring(0, swiftCode.length() - 3) : swiftCode)
+                        swiftCode.endsWith("XXX") ? swiftCode.substring(0, swiftCode.length() - 3).trim().toUpperCase() : swiftCode.trim().toUpperCase())
             );
 
         if(allBySwiftCodeStartingWith.isEmpty())
             return Optional.empty();
 
         SwiftData HQ = allBySwiftCodeStartingWith.stream()
-                .filter(data -> data.getSwiftCode().equals(swiftCode))
+                .filter(data -> data.getSwiftCode().equals(swiftCode.trim().toUpperCase()))
                 .findFirst().orElse(allBySwiftCodeStartingWith.getFirst());
 
         List<SwiftDataDTO> branches = allBySwiftCodeStartingWith.stream()
-                .filter(data->!data.getSwiftCode().equals(swiftCode))
+                .filter(data->!data.getSwiftCode().equals(swiftCode.trim().toUpperCase()))
                 .filter(data->!data.getSwiftCode().endsWith("XXX"))
                 .map(data->DTOMappers.mapToSwiftDataDTO(data, List.of()))
                 .toList();
@@ -50,7 +50,7 @@ public class SwiftService {
     }
 
     public Optional<SwiftCountryDataDTO> getSwiftDataByIso2Code(String iso2Code) {
-        ArrayList<SwiftData> swiftData = new ArrayList<>(swiftRepository.findByCountryISO2(iso2Code));
+        ArrayList<SwiftData> swiftData = new ArrayList<>(swiftRepository.findByCountryISO2(iso2Code.trim().toUpperCase()));
 
         if(swiftData.isEmpty())
             return Optional.empty();
@@ -75,7 +75,7 @@ public class SwiftService {
 
     @Transactional
     public void deleteSwiftData(String swiftCode) {
-        if(!swiftRepository.existsBySwiftCode(swiftCode))
+        if(!swiftRepository.existsBySwiftCode(swiftCode.trim().toUpperCase()))
             throw new EntityNotFoundException("SWIFT code not found");
 
         swiftRepository.deleteBySwiftCode(swiftCode);
