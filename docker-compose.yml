@@ -1,8 +1,7 @@
-version: '3.8'
 services:
   postgres:
     image: postgres:15
-    container_name: remilty_postgres
+    container_name: remitly_postgres
     environment:
       - POSTGRES_DB=postgres
       - POSTGRES_USER=user
@@ -11,6 +10,26 @@ services:
       - "5432:5432"
     volumes:
       - postgres_data:/var/lib/postgresql/data
+    networks:
+      - remitly_network
+
+  app:
+    build: .
+    container_name: remitly_app
+    depends_on:
+      - postgres
+    ports:
+      - "8080:8080"
+    environment:
+      - SPRING_DATASOURCE_URL=jdbc:postgresql://postgres:5432/postgres
+      - SPRING_DATASOURCE_USERNAME=user
+      - SPRING_DATASOURCE_PASSWORD=password
+    networks:
+      - remitly_network
 
 volumes:
   postgres_data:
+
+networks:
+  remitly_network:
+    driver: bridge
