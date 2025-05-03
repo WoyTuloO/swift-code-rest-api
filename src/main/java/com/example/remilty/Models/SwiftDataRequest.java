@@ -3,6 +3,7 @@ package com.example.remilty.Models;
 import com.fasterxml.jackson.annotation.JsonProperty;
 import jakarta.validation.constraints.NotBlank;
 import jakarta.validation.constraints.NotNull;
+import jakarta.validation.constraints.Size;
 import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.NoArgsConstructor;
@@ -11,6 +12,7 @@ import lombok.NoArgsConstructor;
 @AllArgsConstructor
 @NoArgsConstructor
 public class SwiftDataRequest {
+    @Size(min = 11, max = 11, message = "SWIFT code must be exactly 11 characters")
     @NotBlank
     private String swiftCode;
     @NotBlank
@@ -21,7 +23,7 @@ public class SwiftDataRequest {
     private String countryISO2;
     @NotBlank
     private String countryName;
-    @JsonProperty("isHeadquarter")
     @NotNull
+    @JsonProperty("isHeadquarter")
     private boolean isHeadquarter;
 }
