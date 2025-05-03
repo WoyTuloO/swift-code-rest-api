@@ -42,7 +42,10 @@ public class SwiftService {
         List<SwiftDataDTO> branches = allBySwiftCodeStartingWith.stream()
                 .filter(data->!data.getSwiftCode().equals(swiftCode.trim().toUpperCase()))
                 .filter(data->!data.getSwiftCode().endsWith("XXX"))
-                .map(data->DTOMappers.mapToSwiftDataDTO(data, List.of()))
+                .map(data -> {
+                    data.setCountryName(null);
+                    return DTOMappers.mapToSwiftDataDTO(data, List.of());
+                })
                 .toList();
 
         return Optional.of(DTOMappers.mapToSwiftDataDTO(HQ, branches));
