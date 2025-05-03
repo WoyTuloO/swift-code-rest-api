@@ -115,6 +115,7 @@ public class SwiftServiceTest {
         req.setAddress("HQ");
         req.setCountryName("POLAND");
         req.setCountryISO2("PL");
+        req.setHeadquarter(true);
 
         SwiftData swiftData = new SwiftData("PL", "BANKPLPPXXX", "BANK", "HQ", "POLAND");
         swiftData.setId(15L);
@@ -208,4 +209,32 @@ public class SwiftServiceTest {
         then(swiftRepository).should(never()).deleteBySwiftCode(hq.getSwiftCode());
     }
 
+
+    @Test
+    void shallNormalizeSwiftCodeInput(){
+        String input = "  BANKPLppXXX  ";
+
+        given(swiftRepository.findAllBySwiftCodeStartingWith("BANKPLPPXXX")).willReturn(List.of(hq, branch1, branch2));
+
+        Optional<SwiftDataDTO> result = underTest.getSwiftDataBySwiftCode(input);
+
+        assertThat(result).isPresent();
+        assertThat(result.get().getSwiftCode()).isEqualTo("BANKPLPPXXX");
+
+        then(swiftRepository).should().findAllBySwiftCodeStartingWith("BANKPLPPXXX");
+
+    }
+
+    @Test
+    void shallNormalizeIso2CodeInput(){
+        String input = "  pl  ";
+        given(swiftRepository.findByCountryISO2("PL")).willReturn(List.of(hq, branch1, branch2));
+
+        Optional<SwiftCountryDataDTO> result = underTest.getSwiftDataByIso2Code(input);
+
+        assertThat(result).isPresent();
+        assertThat(result.get().getCountryISO2()).isEqualTo("PL");
+
+        then(swiftRepository).should().findByCountryISO2("PL");
+    }
 }
